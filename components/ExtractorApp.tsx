@@ -186,7 +186,7 @@ const finalResult = {
 
 results.push(finalResult);
       } catch (err: any) {
-        results.push({ _filename: file.name, _error: err.message })
+        results.push({ _filename: file.name, _error: err.message } as ExtractedRow) 
       }
     }
 
