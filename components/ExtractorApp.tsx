@@ -501,7 +501,7 @@ results.push(finalResult);
                             suppressContentEditableWarning
                             onBlur={e => handleCellEdit(f.id, i, (e.target as HTMLElement).textContent || '')}
                           >
-                            {val || (!val && val !== 0 ? 'not found' : val)}
+                            {(!val || val === 'null') ? 'not found' : val}
                           </td>
                         )
                       })}
