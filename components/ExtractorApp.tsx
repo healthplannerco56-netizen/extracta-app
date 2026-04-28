@@ -175,9 +175,16 @@ Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
         const pdfText = await extractPDFText(file)
 
         setProgressLabel(`Sending to Claude AI...`)
-        const result = await callClaudeAPI(pdfText, selFields)
-        result._filename = file.name
-        results.push(result)
+        const apiResult = await callClaudeAPI(pdfText, selFields);
+
+// Combine the API result and the filename into a new object, 
+// and explicitly tell TypeScript it matches the ExtractedRow format.
+const finalResult = {
+  ...apiResult,
+  _filename: file.name
+} as ExtractedRow;
+
+results.push(finalResult);
       } catch (err: any) {
         results.push({ _filename: file.name, _error: err.message })
       }
