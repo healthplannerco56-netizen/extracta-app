@@ -64,7 +64,7 @@ export default function ExtractorApp() {
   const [notification, setNotification] = useState('')
   const [showNotification, setShowNotification] = useState(false)
   const [dragOver, setDragOver] = useState(false)
-  const [editableCells, setEditableCells] = useState<Record<string, Record<number, string>>({})
+  const [editableCells, setEditableCells] = useState({} as Record<string, Record<number, string>>);
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
