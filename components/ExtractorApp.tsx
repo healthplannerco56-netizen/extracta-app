@@ -55,8 +55,6 @@ export default function ExtractorApp() {
     new Set(FIELDS.filter(f => f.default).map(f => f.id))
   )
   const [extractedData, setExtractedData] = useState<ExtractedRow[]>([])
-  const [apiKey, setApiKey] = useState('')
-  const [apiKeySaved, setApiKeySaved] = useState(false)
   const [isExtracting, setIsExtracting] = useState(false)
   const [progress, setProgress] = useState(0)
   const [progressLabel, setProgressLabel] = useState('')
@@ -112,7 +110,7 @@ export default function ExtractorApp() {
   }
 
   const callClaudeAPI = async (pdfText: string, fields: Field[]): Promise<Record<string, string>> => {
-    if (!apiKey) throw new Error('API key required')
+    
 
     const fieldList = fields.map(f => `- ${f.name} (${f.desc}): field key "${f.id}"`).join('\n')
     const prompt = `You are a meta-analysis data extraction assistant. Extract the following fields from this research paper text. Return ONLY valid JSON with the exact field keys listed. If a field cannot be found, use null.
@@ -125,10 +123,10 @@ ${pdfText}
 
 Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
 
-    const response = await fetch('process.env.ANTHROPIC_API_KEY.', {
+    const response = await fetch('/api/extract', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pdfText, fields: fieldList, apiKey }),
+      body: JSON.stringify({ pdfText, fields: fieldList }),
     })
 
     if (!response.ok) {
@@ -140,10 +138,7 @@ Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
   }
 
   const startExtraction = async () => {
-    if (!apiKey) {
-      notify('Please enter your Anthropic API key first (Step 1)')
-      goToTab(0)
-      return
+  
     }
     if (files.length === 0) {
       notify('Please upload at least one PDF first')
@@ -289,46 +284,6 @@ results.push(finalResult);
 
       {/* PANEL 1: UPLOAD */}
       <div className={`panel ${activeTab === 0 ? 'active' : ''}`}>
-        <div className="api-setup">
-          <div className="api-setup-title">⚙ ANTHROPIC API KEY REQUIRED</div>
-          <p style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: '1.6' }}>
-            Extracta uses Claude AI to read your PDFs. Your key is stored only in your browser 
-            session and never sent to our servers. Get one free at{' '}
-            <a href="https://console.anthropic.com" target="_blank" style={{ color: 'var(--accent)' }}>
-              console.anthropic.com
-            </a>
-          </p>
-          <div className="api-input-wrap">
-            <input
-              className="api-input"
-              type="password"
-              placeholder="sk-ant-api03-..."
-              value={apiKey}
-              onChange={e => setApiKey(e.target.value)}
-              autoComplete="off"
-            />
-            <button
-              className="btn btn-accent"
-              onClick={() => {
-                if (!apiKey.startsWith('sk-ant')) {
-                  notify('Key should start with sk-ant-...')
-                  return
-                }
-                setApiKeySaved(true)
-                notify('API key saved for this session')
-              }}
-            >
-              Save Key
-            </button>
-          </div>
-          {apiKeySaved && (
-            <p style={{ fontFamily: 'var(--mono)', fontSize: '11px', marginTop: '8px', color: 'var(--success)' }}>
-              ✓ API key saved for this session
-            </p>
-          )}
-        </div>
-
-        <div
           className={`upload-zone ${dragOver ? 'drag-over' : ''}`}
           onDragOver={e => { e.preventDefault(); setDragOver(true) }}
           onDragLeave={() => setDragOver(false)}
