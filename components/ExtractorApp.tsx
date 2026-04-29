@@ -266,7 +266,6 @@ results.push(finalResult);
         ) / (successCount * selFields.length) * 100
       )
     
-
   return (
     <>
       <div className="steps-bar">
