@@ -139,7 +139,7 @@ Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
 
   const startExtraction = async () => {
   
-    }
+    
     if (files.length === 0) {
       notify('Please upload at least one PDF first')
       goToTab(0)
@@ -265,7 +265,7 @@ results.push(finalResult);
           acc + selFields.filter(f => row[f.id] && row[f.id] !== null).length, 0
         ) / (successCount * selFields.length) * 100
       )
-    : 0
+    
 
   return (
     <>
@@ -284,7 +284,8 @@ results.push(finalResult);
 
       {/* PANEL 1: UPLOAD */}
       <div className={`panel ${activeTab === 0 ? 'active' : ''}`}>
-          className={`upload-zone ${dragOver ? 'drag-over' : ''}`}
+        <div  
+        className={`upload-zone ${dragOver ? 'drag-over' : ''}`}
           onDragOver={e => { e.preventDefault(); setDragOver(true) }}
           onDragLeave={() => setDragOver(false)}
           onDrop={e => {
