@@ -4,19 +4,20 @@ const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages'
 
 export async function POST(request: NextRequest) {
   try {
-    const { pdfText, fields, apiKey } = await request.json()
+    const { pdfText, fields } = await request.json()
 
-    if (!pdfText || !fields || !apiKey) {
+    if (!pdfText || !fields) {
       return NextResponse.json(
-        { error: 'Missing required fields: pdfText, fields, apiKey' },
+        { error: 'Missing required fields: pdfText, fields' },
         { status: 400 }
       )
     }
 
-    if (!apiKey.startsWith('sk-ant')) {
+    const apiKey = process.env.ANTHROPIC_API_KEY
+    if (!apiKey) {
       return NextResponse.json(
-        { error: 'Invalid API key format. Key should start with sk-ant-' },
-        { status: 400 }
+        { error: 'Server misconfigured: missing API key' },
+        { status: 500 }
       )
     }
 
@@ -46,7 +47,6 @@ Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
 
     if (!response.ok) {
       const err = await response.json()
-      console.error('Anthropic API error:', err)
       return NextResponse.json(
         { error: err.error?.message || 'Anthropic API error' },
         { status: response.status }
@@ -54,23 +54,11 @@ Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
     }
 
     const data = await response.json()
-    const text = data.content?.map((b: any) => b.text || '').join('') || ''
+    const text = data.content?.map((b: any) => b.text || '').join('').trim()
     const clean = text.replace(/```json|```/g, '').trim()
+    return NextResponse.json(JSON.parse(clean))
 
-    try {
-      const parsed = JSON.parse(clean)
-      return NextResponse.json(parsed)
-    } catch {
-      return NextResponse.json(
-        { error: 'Failed to parse AI response', raw: clean },
-        { status: 500 }
-      )
-    }
-  } catch (error: any) {
-    console.error('Extract route error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Internal server error' },
-      { status: 500 }
-    )
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 })
   }
 }
