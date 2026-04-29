@@ -125,7 +125,7 @@ ${pdfText}
 
 Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
 
-    const response = await fetch('/api/extract', {
+    const response = await fetch('process.env.ANTHROPIC_API_KEY.', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ pdfText, fields: fieldList, apiKey }),
