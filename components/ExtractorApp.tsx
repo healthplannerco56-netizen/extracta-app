@@ -265,7 +265,7 @@ results.push(finalResult);
           acc + selFields.filter(f => row[f.id] && row[f.id] !== null).length, 0
         ) / (successCount * selFields.length) * 100
       )
-    
+    : 0
   return (
     <>
       <div className="steps-bar">
