@@ -1,4 +1,4 @@
-Import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 
 const anthropic = new Anthropic({
@@ -9,34 +9,53 @@ export async function POST(req: NextRequest) {
   try {
     const { pdfText, fields } = await req.json()
 
-    const prompt = `You are a meta-analysis data extraction assistant. Extract the following fields from this research paper text. Return ONLY valid JSON with the exact field keys listed. If a field cannot be found, use null.
+    // 1. Validation check
+    if (!pdfText || !fields) {
+      return NextResponse.json({ error: 'Missing pdfText or fields' }, { status: 400 })
+    }
 
-Fields to extract:
-${fields}
+    // 2. Structured Prompting
+    // Using XML-style tags helps Claude distinguish between instructions and data
+    const prompt = `You are a specialized data extraction assistant.
+    
+<fields_to_extract>
+${JSON.stringify(fields, null, 2)}
+</fields_to_extract>
 
-Paper text:
+<research_paper_text>
 ${pdfText}
+</research_paper_text>
 
-Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
+Return ONLY a valid JSON object. If a value is missing, use null. No preamble or post-analysis.`
 
     const message = await anthropic.messages.create({
       model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 1000,
+      max_tokens: 2000, // Research extractions can be lengthy
       messages: [{ role: 'user', content: prompt }],
+      // Use 'system' for persona to keep the user prompt focused on the data
+      system: "You are a data extraction engine. You always output valid JSON."
     })
 
-    const text = message.content[0].type === 'text' ? message.content[0].text : ''
+    const responseContent = message.content[0].type === 'text' ? message.content[0].text : ''
 
-    let parsed: Record<string, string>
+    // 3. Robust JSON Parsing
     try {
-      parsed = JSON.parse(text.replace(/```json|```/g, '').trim())
-    } catch {
-      return NextResponse.json({ error: 'Failed to parse AI response' }, { status: 500 })
+      // Regex handles cases where the model ignores instructions and includes markdown blocks
+      const jsonMatch = responseContent.match(/\{[\s\S]*\}/)
+      const cleanJson = jsonMatch ? jsonMatch[0] : responseContent
+      const parsed = JSON.parse(cleanJson)
+      
+      return NextResponse.json(parsed)
+    } catch (parseError) {
+      console.error('Extraction Parse Error:', responseContent)
+      return NextResponse.json({ error: 'AI returned invalid JSON format' }, { status: 422 })
     }
 
-    return NextResponse.json(parsed)
-
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Server error' }, { status: 500 })
+    console.error('Anthropic API Error:', err)
+    return NextResponse.json(
+      { error: err.message || 'Internal Server Error' }, 
+      { status: err.status || 500 }
+    )
   }
 }
