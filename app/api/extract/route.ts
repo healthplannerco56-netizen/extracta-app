@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     const prompt = `Fields to extract: ${fields}\n\nPaper text: ${pdfText}`
 
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20240620', // Faster & more reliable for formatting
+      model: 'claude-3-5-sonnet-20241022', // Faster & more reliable for formatting
       max_tokens: 4000,
       system: "You are a meta-analysis data extraction assistant. Return ONLY valid JSON with the exact field keys requested. If a field cannot be found, use null. No markdown, no explanation.",
       messages: [{ role: 'user', content: prompt }],
