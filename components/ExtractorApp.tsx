@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useAuth } from '@/hooks/useAuth'
+import AuthModal from '@/components/AuthModal'
 import * as pdfjsLib from 'pdfjs-dist'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs`
@@ -61,6 +63,8 @@ export default function ExtractorApp() {
   const [notification, setNotification] = useState('')
   const [showNotification, setShowNotification] = useState(false)
   const [dragOver, setDragOver] = useState(false)
+  const { user } = useAuth()
+  const [showAuth, setShowAuth] = useState(false)
   const [editableCells, setEditableCells] = useState({} as Record<string, Record<number, string>>);
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -138,7 +142,10 @@ Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
   }
 
   const startExtraction = async () => {
-  
+    if (!user) {
+      setShowAuth(true)
+      return
+    }
     
     if (files.length === 0) {
       notify('Please upload at least one PDF first')
@@ -268,6 +275,12 @@ results.push(finalResult);
     : 0
   return (
     <>
+      {showAuth && (
+      <AuthModal
+        onClose={() => setShowAuth(false)}
+        onSuccess={() => setShowAuth(false)}
+        />
+      )}
       <div className="steps-bar">
         {[0, 1, 2, 3].map(n => (
           <div
