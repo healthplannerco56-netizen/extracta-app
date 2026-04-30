@@ -131,6 +131,7 @@ Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ pdfText, fields: fieldList }),
+      credentials: 'include',
     })
 
     if (!response.ok) {
