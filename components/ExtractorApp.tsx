@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
@@ -283,6 +284,22 @@ results.push(finalResult);
         />
       )}
       <div className="steps-bar">
+        {!user && (
+          <div
+            onClick={() => setShowAuth(true)}
+            style={{
+              background: '#b5451b',
+              color: '#fff',
+              padding: '10px 20px',
+      textAlign: 'center',
+      cursor: 'pointer',
+      fontSize: '13px',
+      letterSpacing: '0.05em'
+    }}
+  >
+    ⚠ Sign in required to extract data — Click here to sign in
+  </div>
+)}
         {[0, 1, 2, 3].map(n => (
           <div
             key={n}
