@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import ExtractorApp from '@/components/ExtractorApp'
+import PdfWorkerSetup from '@/components/PdfWorkerSetup' // 1. Import the setup component
 
 export const metadata: Metadata = {
   title: 'Extracta — AI Data Extraction for Meta-Analysis',
@@ -10,6 +11,9 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
+      {/* 2. Initialize the worker silently on the client side */}
+      <PdfWorkerSetup />
+
       <nav>
         <div className="logo">Extract<span>a</span></div>
         <div className="nav-badge">BETA v0.1</div>
