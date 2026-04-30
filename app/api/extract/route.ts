@@ -29,7 +29,7 @@ ${pdfText}
 Return ONLY a valid JSON object. If a value is missing, use null. No preamble or post-analysis.`
 
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 2000, // Research extractions can be lengthy
       messages: [{ role: 'user', content: prompt }],
       // Use 'system' for persona to keep the user prompt focused on the data
