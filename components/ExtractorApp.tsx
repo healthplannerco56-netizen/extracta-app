@@ -277,29 +277,46 @@ results.push(finalResult);
     : 0
   return (
     <>
+      {/* SIGN IN BUTTON - TOP RIGHT CORNER */}
+      <div style={{
+        position: 'fixed',
+        top: '16px',
+        right: '20px',
+        zIndex: 9998,
+      }}>
+        {user ? (
+          <button
+            onClick={() => { import('@/lib/supabase').then(m => m.supabase.auth.signOut()) }}
+            style={{
+              padding: '8px 16px', background: 'transparent',
+              border: '1px solid #ccc', borderRadius: '4px',
+              fontSize: '12px', cursor: 'pointer', color: '#666'
+            }}
+          >
+            Sign Out
+          </button>
+        ) : (
+          <button
+            onClick={() => setShowAuth(true)}
+            style={{
+              padding: '8px 16px', background: '#b5451b',
+              border: 'none', borderRadius: '4px',
+              fontSize: '12px', cursor: 'pointer',
+              color: '#fff', fontWeight: '600'
+            }}
+          >
+            Sign In
+          </button>
+        )}
+      </div>
+
       {showAuth && (
-      <AuthModal
-        onClose={() => setShowAuth(false)}
-        onSuccess={() => setShowAuth(false)}
+        <AuthModal
+          onClose={() => setShowAuth(false)}
+          onSuccess={() => setShowAuth(false)}
         />
       )}
       <div className="steps-bar">
-        {!user && (
-          <div
-            onClick={() => setShowAuth(true)}
-            style={{
-              background: '#b5451b',
-              color: '#fff',
-              padding: '10px 20px',
-      textAlign: 'center',
-      cursor: 'pointer',
-      fontSize: '13px',
-      letterSpacing: '0.05em'
-    }}
-  >
-    ⚠ Sign in required to extract data — Click here to sign in
-  </div>
-)}
         {[0, 1, 2, 3].map(n => (
           <div
             key={n}
