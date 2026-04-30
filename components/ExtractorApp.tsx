@@ -277,47 +277,36 @@ results.push(finalResult);
       )
     : 0
   return (
-    <>
-      {/* SIGN IN BUTTON - TOP RIGHT CORNER */}
-      <div style={{
+  <>
+    {/* AUTH BUTTON */}
+    <button
+      onClick={() => user ? supabase.auth.signOut() : setShowAuth(true)}
+      style={{
         position: 'fixed',
-        top: '16px',
-        right: '20px',
-        zIndex: 9998,
-      }}>
-        {user ? (
-          <button
-            onClick={() => { import('@/lib/supabase').then(m => m.supabase.auth.signOut()) }}
-            style={{
-              padding: '8px 16px', background: 'transparent',
-              border: '1px solid #ccc', borderRadius: '4px',
-              fontSize: '12px', cursor: 'pointer', color: '#666'
-            }}
-          >
-            Sign Out
-          </button>
-        ) : (
-          <button
-            onClick={() => setShowAuth(true)}
-            style={{
-              padding: '8px 16px', background: '#b5451b',
-              border: 'none', borderRadius: '4px',
-              fontSize: '12px', cursor: 'pointer',
-              color: '#fff', fontWeight: '600'
-            }}
-          >
-            Sign In
-          </button>
-        )}
-      </div>
+        top: '20px',
+        right: '80px',
+        zIndex: 9999,
+        padding: '8px 18px',
+        background: user ? 'transparent' : '#b5451b',
+        border: user ? '1px solid #999' : 'none',
+        borderRadius: '4px',
+        color: user ? '#666' : '#fff',
+        fontSize: '12px',
+        fontWeight: '600',
+        cursor: 'pointer',
+        letterSpacing: '0.05em'
+      }}
+    >
+      {user ? 'Sign Out' : 'Sign In'}
+    </button>
 
-      {showAuth && (
-        <AuthModal
-          onClose={() => setShowAuth(false)}
-          onSuccess={() => setShowAuth(false)}
-        />
-      )}
-      <div className="steps-bar">
+    {showAuth && (
+      <AuthModal
+        onClose={() => setShowAuth(false)}
+        onSuccess={() => setShowAuth(false)}
+      />
+    )}
+    <div className="steps-bar">
         {[0, 1, 2, 3].map(n => (
           <div
             key={n}
