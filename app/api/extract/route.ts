@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { createServerClient } from '@supabase/ssr'
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
@@ -7,54 +8,105 @@ const anthropic = new Anthropic({
 
 export async function POST(req: NextRequest) {
   try {
+    // 1. Auth check using cookies from request
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return req.cookies.getAll()
+          },
+          setAll() {
+            // No-op for API routes
+          },
+        },
+      }
+    )
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // 2. Check monthly usage limit
+    const start = new Date()
+    start.setDate(1)
+    start.setHours(0, 0, 0, 0)
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('id', user.id)
+      .single()
+
+    const plan = profile?.plan ?? 'free'
+    const limit = plan === 'pro' ? Infinity : 10
+
+    if (limit !== Infinity) {
+      const { count } = await supabase
+        .from('extractions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gte('created_at', start.toISOString())
+
+      if ((count ?? 0) >= limit) {
+        return NextResponse.json(
+          { error: `Free plan limit of ${limit} extractions/month reached. Upgrade to Pro.` },
+          { status: 403 }
+        )
+      }
+    }
+
+    // 3. Extract
     const { pdfText, fields } = await req.json()
 
-    // 1. Validation check
     if (!pdfText || !fields) {
       return NextResponse.json({ error: 'Missing pdfText or fields' }, { status: 400 })
     }
 
-    // 2. Structured Prompting
-    // Using XML-style tags helps Claude distinguish between instructions and data
-    const prompt = `You are a specialized data extraction assistant.
-    
-<fields_to_extract>
-${JSON.stringify(fields, null, 2)}
-</fields_to_extract>
-
-<research_paper_text>
-${pdfText}
-</research_paper_text>
-
-Return ONLY a valid JSON object. If a value is missing, use null. No preamble or post-analysis.`
-
     const message = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 2000, // Research extractions can be lengthy
-      messages: [{ role: 'user', content: prompt }],
-      // Use 'system' for persona to keep the user prompt focused on the data
-      system: "You are a data extraction engine. You always output valid JSON."
+      max_tokens: 2000,
+      system: 'You are a data extraction engine. You always output valid JSON only.',
+      messages: [
+        {
+          role: 'user',
+          content: `Extract the following fields from this research paper. Return ONLY a valid JSON object. Use null for missing fields.
+
+Fields:
+${fields}
+
+Paper text:
+${pdfText}`
+        }
+      ],
     })
 
-    const responseContent = message.content[0].type === 'text' ? message.content[0].text : ''
+    const text = message.content[0].type === 'text' ? message.content[0].text : ''
 
-    // 3. Robust JSON Parsing
+    let parsed: Record<string, string>
     try {
-      // Regex handles cases where the model ignores instructions and includes markdown blocks
-      const jsonMatch = responseContent.match(/\{[\s\S]*\}/)
-      const cleanJson = jsonMatch ? jsonMatch[0] : responseContent
-      const parsed = JSON.parse(cleanJson)
-      
-      return NextResponse.json(parsed)
-    } catch (parseError) {
-      console.error('Extraction Parse Error:', responseContent)
-      return NextResponse.json({ error: 'AI returned invalid JSON format' }, { status: 422 })
+      const jsonMatch = text.match(/\{[\s\S]*\}/)
+      parsed = JSON.parse(jsonMatch ? jsonMatch[0] : text)
+    } catch {
+      return NextResponse.json({ error: 'AI returned invalid JSON' }, { status: 422 })
     }
+
+    // 4. Record usage
+    await supabase.from('extractions').insert({
+      user_id: user.id,
+      file_count: 1,
+      fields_count: Object.keys(parsed).length,
+    })
+
+    return NextResponse.json(parsed)
 
   } catch (err: any) {
     console.error('Anthropic API Error:', err)
     return NextResponse.json(
-      { error: err.message || 'Internal Server Error' }, 
+      { error: err.message || 'Server error' },
       { status: err.status || 500 }
     )
   }
