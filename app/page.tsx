@@ -16,8 +16,11 @@ export default function Home() {
 
       <nav>
         <div className="logo">Extract<span>a</span></div>
-        <div className="nav-badge">BETA v0.1</div>
-      </nav>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="nav-badge">BETA v0.1</div>
+          <AuthButton />
+        </div>
+        </nav>
 
       <div className="hero">
         <div className="hero-label">AI-powered research tool</div>
