@@ -2,6 +2,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import AuthModal from '@/components/AuthModal'
 import * as pdfjsLib from 'pdfjs-dist'
