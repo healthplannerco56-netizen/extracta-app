@@ -24,12 +24,13 @@ export async function POST(req: NextRequest) {
       }
     )
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+   const authHeader = req.headers.get('Authorization')
+   const token = authHeader?.replace('Bearer ', '')
 
-    if (authError || !user) {
+    if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-
+   const { data: { user}, error } = await supabase.auth.getUser(token)
     // 2. Check monthly usage limit
     const start = new Date()
     start.setDate(1)
