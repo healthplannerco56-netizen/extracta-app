@@ -135,24 +135,6 @@ export default function ExtractorApp() {
   })
     
 
-   
-    const prompt = `You are a meta-analysis data extraction assistant. Extract the following fields from this research paper text. Return ONLY valid JSON with the exact field keys listed. If a field cannot be found, use null.
-
-Fields to extract:
-${fieldList}
-
-Paper text:
-${pdfText}
-
-Return ONLY a JSON object with these exact keys. No markdown, no explanation.`
-
-    const response = await fetch('/api/extract', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pdfText, fields: fieldList }),
-      credentials: 'include',
-    })
-
     if (!response.ok) {
       const err = await response.json()
       throw new Error(err.error || 'API error')
