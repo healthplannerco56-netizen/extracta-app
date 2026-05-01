@@ -1,3 +1,4 @@
+import AuthButton from '@/components/AuthButton'
 import type { Metadata } from 'next'
 import './globals.css'
 import ExtractorApp from '@/components/ExtractorApp'
