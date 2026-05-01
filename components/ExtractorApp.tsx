@@ -114,11 +114,28 @@ export default function ExtractorApp() {
     }
     return text.slice(0, 12000)
   }
-
-  const callClaudeAPI = async (pdfText: string, fields: Field[]): Promise<Record<string, string>> => {
+    const callClaudeAPI = async (pdfText: string, fields: Field[]): Promise<Record<string, string>> => {
+  const fieldList = fields.map(f => `- ${f.name} (${f.desc}): field key "${f.id}"`).join('\n')
+  
+  // Get the current session token
+  const { createClient } = await import('@supabase/supabase-js')
+  const sb = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+  const { data: { session } } = await sb.auth.getSession()
+  
+  const response = await fetch('/api/extract', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session?.access_token ?? ''}`,
+    },
+    body: JSON.stringify({ pdfText, fields: fieldList }),
+  })
     
 
-    const fieldList = fields.map(f => `- ${f.name} (${f.desc}): field key "${f.id}"`).join('\n')
+   
     const prompt = `You are a meta-analysis data extraction assistant. Extract the following fields from this research paper text. Return ONLY valid JSON with the exact field keys listed. If a field cannot be found, use null.
 
 Fields to extract:
