@@ -49,12 +49,9 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   }
 
 return (
-  <div style={{
-    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    zIndex: 9999, overflowY: 'auto'
-  }}>
-      <div style={{
+  <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto' }}>
+      
+    <div style={{
         background: '#0f0f0f', border: '1px solid #2a2a2a', borderRadius: '8px',
         padding: '40px', width: '100%', maxWidth: '400px', position: 'relative'
         margin: 'auto', marginTop: '20px', marginBottom: '20px'
