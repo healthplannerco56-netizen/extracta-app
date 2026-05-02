@@ -552,12 +552,17 @@ results.push(finalResult);
             <div className="export-card-name">JSON</div>
             <div className="export-card-desc">For developers and API integrations</div>
           </div>
-          <div className="export-card" onClick={exportGradMeta}>
+          <div className="export-card" onClick={exportGradMetaBinary}>
             <div className="export-card-icon">📈</div>
-            <div className="export-card-name">GradMeta</div>
-            <div className="export-card-desc">Ready to paste into GradMeta for statistical analysis</div>
+            <div className="export-card-name">GradMeta — Binary</div>
+            <div className="export-card-desc">OR / RR / RD · events-based outcomes</div>
           </div>
-        </div>
+
+         <div className="export-card" onClick={exportGradMetaContinuous}>
+           <div className="export-card-icon">📉</div>
+           <div className="export-card-name">GradMeta — Continuous</div>
+           <div className="export-card-desc">MD / SMD · means & SD outcomes</div>
+          </div>
 
         <div style={{ background: 'var(--paper)', border: '1px solid var(--border)', borderRadius: '3px', padding: '20px 24px', marginBottom: '24px' }}>
           <div style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--accent)', marginBottom: '8px', letterSpacing: '0.08em' }}>
