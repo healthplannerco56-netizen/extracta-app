@@ -36,7 +36,7 @@ export default function Home() {
             <span className="stat-label">Faster than manual</span>
           </div>
           <div className="stat-item">
-            <span className="stat-num">95%</span>
+            <span className="stat-num">90%</span>
             <span className="stat-label">Field accuracy</span>
           </div>
           <div className="stat-item">
