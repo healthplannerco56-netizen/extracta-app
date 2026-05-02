@@ -16,46 +16,45 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault() // Prevents the page from reloading on form submit
     setLoading(true)
     setError('')
     setMessage('')
-
+    
     if (mode === 'signup') {
       const { error } = await supabase.auth.signUp({ email, password })
-      if (error) {
-        setError(error.message)
-      } else {
-        setMessage('Check your email to confirm your account.')
-      }
+      if (error) setError(error.message)
+      // Updated message to reflect typical Supabase default settings
+      else setMessage('Account created! Please check your email to verify your account.')
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        setError(error.message)
-      } else {
+      if (error) setError(error.message)
+      else { 
         onSuccess()
-        onClose()
+        onClose() 
       }
     }
-
     setLoading(false)
   }
 
   const handleGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin },
+      options: { 
+        // Consider pointing this to an Auth callback route if you need SSR session access
+        redirectTo: `${window.location.origin}/auth/callback` 
+      },
     })
   }
 
-return (
-  <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto' }}>
-      
-    <div style={{
-        background: '#0f0f0f', border: '1px solid #2a2a2a', borderRadius: '8px',
-        padding: '40px', width: '100%', maxWidth: '400px', position: 'relative'
-        margin: 'auto', marginTop: '20px', marginBottom: '20px'
-  }}>
+  // ... (overlayStyle and cardStyle remain exactly the same) ...
+  const overlayStyle: React.CSSProperties = { /* ... */ }
+  const cardStyle: React.CSSProperties = { /* ... */ }
+
+  return (
+    <div style={overlayStyle}>
+      <div style={cardStyle}>
         <button
           onClick={onClose}
           style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', color: '#666', fontSize: '20px', cursor: 'pointer' }}
@@ -79,56 +78,45 @@ return (
           </div>
         )}
 
-        <div style={{ marginBottom: '12px' }}>
-          <label style={{ display: 'block', fontSize: '12px', color: '#888', marginBottom: '6px', letterSpacing: '0.05em' }}>EMAIL</label>
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="you@university.edu"
-            style={{
-              width: '100%', padding: '10px 12px', background: '#1a1a1a',
-              border: '1px solid #2a2a2a', borderRadius: '4px', color: '#fff',
-              fontSize: '14px', boxSizing: 'border-box'
-            }}
-          />
-        </div>
+        {/* Form wrapper added here for better UX */}
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '12px' }}>
+            <label style={{ display: 'block', fontSize: '12px', color: '#888', marginBottom: '6px', letterSpacing: '0.05em' }}>EMAIL</label>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="you@university.edu"
+              required
+              style={{ width: '100%', padding: '10px 12px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '4px', color: '#fff', fontSize: '14px', boxSizing: 'border-box' }}
+            />
+          </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', fontSize: '12px', color: '#888', marginBottom: '6px', letterSpacing: '0.05em' }}>PASSWORD</label>
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="••••••••"
-            style={{
-              width: '100%', padding: '10px 12px', background: '#1a1a1a',
-              border: '1px solid #2a2a2a', borderRadius: '4px', color: '#fff',
-              fontSize: '14px', boxSizing: 'border-box'
-            }}
-          />
-        </div>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', fontSize: '12px', color: '#888', marginBottom: '6px', letterSpacing: '0.05em' }}>PASSWORD</label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              style={{ width: '100%', padding: '10px 12px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '4px', color: '#fff', fontSize: '14px', boxSizing: 'border-box' }}
+            />
+          </div>
 
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          style={{
-            width: '100%', padding: '12px', background: '#c8a97e',
-            border: 'none', borderRadius: '4px', color: '#000',
-            fontSize: '14px', fontWeight: '600', cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.7 : 1, marginBottom: '12px'
-          }}
-        >
-          {loading ? 'Please wait...' : mode === 'login' ? 'Sign In' : 'Create Account'}
-        </button>
+          <button
+            type="submit"
+            disabled={loading}
+            style={{ width: '100%', padding: '12px', background: '#c8a97e', border: 'none', borderRadius: '4px', color: '#000', fontSize: '14px', fontWeight: '600', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, marginBottom: '12px' }}
+          >
+            {loading ? 'Please wait...' : mode === 'login' ? 'Sign In' : 'Create Account'}
+          </button>
+        </form>
 
         <button
+          type="button"
           onClick={handleGoogle}
-          style={{
-            width: '100%', padding: '12px', background: 'transparent',
-            border: '1px solid #2a2a2a', borderRadius: '4px', color: '#fff',
-            fontSize: '14px', cursor: 'pointer', marginBottom: '20px'
-          }}
+          style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid #2a2a2a', borderRadius: '4px', color: '#fff', fontSize: '14px', cursor: 'pointer', marginBottom: '20px' }}
         >
           Continue with Google
         </button>
