@@ -17,20 +17,42 @@ interface Field {
 }
 
 const FIELDS: Field[] = [
-  { id: 'authors', name: 'Authors', desc: 'Author surnames', group: 'id', default: true },
-  { id: 'year', name: 'Publication Year', desc: 'Year published', group: 'id', default: true },
-  { id: 'study_design', name: 'Study Design', desc: 'RCT, cohort, etc.', group: 'id', default: true },
-  { id: 'sample_size', name: 'Sample Size (N)', desc: 'Total participants', group: 'pop', default: true },
-  { id: 'population', name: 'Population', desc: 'Patient/participant type', group: 'pop', default: true },
-  { id: 'mean_age', name: 'Mean Age', desc: 'Average age of participants', group: 'pop', default: false },
-  { id: 'intervention', name: 'Intervention', desc: 'Treatment / exposure', group: 'int', default: true },
-  { id: 'comparator', name: 'Comparator / Control', desc: 'Control or comparison arm', group: 'int', default: true },
-  { id: 'outcome', name: 'Primary Outcome', desc: 'Main measured outcome', group: 'out', default: true },
-  { id: 'effect_size', name: 'Effect Size', desc: 'OR, RR, SMD, MD, HR', group: 'out', default: true },
-  { id: 'confidence_interval', name: '95% CI', desc: 'Confidence interval', group: 'out', default: true },
-  { id: 'p_value', name: 'P-value', desc: 'Statistical significance', group: 'out', default: false },
-  { id: 'rob', name: 'Risk of Bias', desc: 'Low / Unclear / High', group: 'qual', default: false },
-  { id: 'funding', name: 'Funding Source', desc: 'Industry vs. public', group: 'qual', default: false },
+  // Study Identification
+  { id: 'authors',        name: 'Authors',             desc: 'Author surnames',                    group: 'id',  default: true  },
+  { id: 'year',           name: 'Publication Year',    desc: 'Year published',                     group: 'id',  default: true  },
+  { id: 'journal',        name: 'Journal',             desc: 'Journal name',                       group: 'id',  default: false },
+  { id: 'study_design',   name: 'Study Design',        desc: 'RCT, cohort, etc.',                  group: 'id',  default: true  },
+
+  // Population
+  { id: 'sample_size',    name: 'Sample Size (N)',     desc: 'Total participants',                 group: 'pop', default: true  },
+  { id: 'n_treatment',    name: 'N Treatment',         desc: 'Participants in treatment arm',      group: 'pop', default: true  },
+  { id: 'n_control',      name: 'N Control',           desc: 'Participants in control arm',        group: 'pop', default: true  },
+  { id: 'population',     name: 'Population',          desc: 'Patient/participant type',           group: 'pop', default: true  },
+  { id: 'mean_age',       name: 'Mean Age',            desc: 'Average age of participants',        group: 'pop', default: false },
+
+  // Intervention
+  { id: 'intervention',   name: 'Intervention',        desc: 'Treatment / exposure',               group: 'int', default: true  },
+  { id: 'comparator',     name: 'Comparator / Control',desc: 'Control or comparison arm',          group: 'int', default: true  },
+
+  // Outcomes — Binary
+  { id: 'outcome',        name: 'Outcome Type',        desc: 'Primary measured outcome',           group: 'out', default: true  },
+  { id: 'events_treatment', name: 'Events (Treatment)',desc: 'Event count in treatment arm',       group: 'out', default: true  },
+  { id: 'events_control', name: 'Events (Control)',    desc: 'Event count in control arm',         group: 'out', default: true  },
+  { id: 'effect_size',    name: 'Effect Measure',      desc: 'OR, RR, RD, MD, SMD, HR',           group: 'out', default: true  },
+  { id: 'confidence_interval', name: '95% CI',         desc: 'Confidence interval',                group: 'out', default: true  },
+  { id: 'p_value',        name: 'P-value',             desc: 'Statistical significance',           group: 'out', default: false },
+
+  // Outcomes — Continuous
+  { id: 'mean_treatment', name: 'Mean (Treatment)',    desc: 'Mean value in treatment arm',        group: 'out', default: false },
+  { id: 'mean_control',   name: 'Mean (Control)',      desc: 'Mean value in control arm',          group: 'out', default: false },
+  { id: 'sd_treatment',   name: 'SD (Treatment)',      desc: 'Standard deviation, treatment arm',  group: 'out', default: false },
+  { id: 'sd_control',     name: 'SD (Control)',        desc: 'Standard deviation, control arm',    group: 'out', default: false },
+
+  // Quality
+  { id: 'rob',            name: 'Risk of Bias',        desc: 'Low / Some concerns / High / Unclear', group: 'qual', default: false },
+  { id: 'grade',          name: 'GRADE',               desc: 'High / Moderate / Low / Very Low',  group: 'qual', default: false },
+  { id: 'subgroup',       name: 'Subgroup',            desc: 'Subgroup label if applicable',       group: 'qual', default: false },
+  { id: 'funding',        name: 'Funding Source',      desc: 'Industry vs. public',               group: 'qual', default: false },
 ]
 
 const GROUP_LABELS: Record<string, string> = {
