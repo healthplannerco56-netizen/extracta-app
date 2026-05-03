@@ -298,7 +298,6 @@ results.push(finalResult);
       )
     : 0
   return (
-    }
     <>
     {/* AUTH BUTTON */}
     <button
