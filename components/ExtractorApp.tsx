@@ -287,19 +287,15 @@ results.push(finalResult);
     }
     return row[fieldId] || ''
   }
-
-  const selFields = FIELDS.filter(f => selectedFields.has(f.id))
+const selFields = FIELDS.filter(f => selectedFields.has(f.id))
   const successCount = extractedData.filter(d => !d._error).length
-  const fillRate = selFields.length > 0 && successCount > 0
-    ? Math.round(
-        extractedData.reduce((acc, row) =>
-          acc + selFields.filter(f => row[f.id] && row[f.id] !== null).length, 0
-        ) / (successCount * selFields.length) * 100
-      )
-    : 0
+  const fillRate = selFields.length > 0 && successCount > 0 ? Math.round(extractedData.reduce((acc, row) => acc + selFields.filter(f => row[f.id] && row[f.id] !== null).length, 0) / (successCount * selFields.length) * 100) : 0
 
   return (
     <>
+    
+    </>
+  
     {/* AUTH BUTTON */}
     <button
       onClick={() => user ? supabase.auth.signOut() : setShowAuth(true)}
