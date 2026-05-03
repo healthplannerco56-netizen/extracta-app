@@ -84,7 +84,11 @@ Return ONLY a valid JSON object with these exact field keys. Use null for any fi
 
 CRITICAL RULES:
 - effect_size: Return the full value including the number e.g. "RR 0.99" or "OR 1.24" or "MD -0.31". Never return just the measure type alone.
-- confidence_interval: Return the actual numbers only e.g. "0.80-1.21" or "-0.45 to 0.12". Never return just "95% CI".
+- confidence_interval: This is MANDATORY. It must never be null if effect_size is not null. 
+  Look for patterns like "(95% CI: 0.80-1.21)" or "[0.46, 1.39]" immediately after each RR/OR/MD value. 
+  Return all CIs as a semicolon-separated list matching the order of effect_size values 
+  e.g. "0.80-1.21; 0.46-1.39; 0.19-0.73". 
+  If you found RR values, you MUST find their confidence intervals in the same sentence or table row.
 - p_value: Return the numeric value of the PRIMARY outcome p-value e.g. "0.04" or "<0.001". Never return null if a p-value exists anywhere in the paper.
 - n_treatment: Return the number of participants in the intervention/treatment arm as an integer.
 - n_control: Return the number of participants in the control/placebo arm as an integer.
