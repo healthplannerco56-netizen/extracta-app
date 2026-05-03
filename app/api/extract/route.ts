@@ -89,7 +89,9 @@ CRITICAL RULES:
   Return all CIs as a semicolon-separated list matching the order of effect_size values 
   e.g. "0.80-1.21; 0.46-1.39; 0.19-0.73". 
   If you found RR values, you MUST find their confidence intervals in the same sentence or table row.
-- p_value: Return the numeric value of the PRIMARY outcome p-value e.g. "0.04" or "<0.001". Never return null if a p-value exists anywhere in the paper.
+- p_value: Return ONLY the p-value of the first/primary outcome listed in the abstract 
+  or results section. For this paper that would be the QFT conversion result. 
+  Return a single value only e.g. "0.90".
 - n_treatment: Return the number of participants in the intervention/treatment arm as an integer.
 - n_control: Return the number of participants in the control/placebo arm as an integer.
 - events_treatment: Return the number of events/outcomes that occurred in the treatment arm as an integer.
