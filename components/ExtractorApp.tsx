@@ -245,23 +245,60 @@ results.push(finalResult);
     notify('JSON downloaded')
   }
 
-  const exportGradMeta = () => {
+  const buildGradMetaCSV = (isContinuous: boolean) => {
+    const rows = extractedData.filter(d => !d._error).map(d => {
+      if (isContinuous) {
+        return {
+          study: `${d.authors || ''} (${d.year || ''})`,
+          mean_treatment: d.mean_treatment || '',
+          mean_control: d.mean_control || '',
+          sd_treatment: d.sd_treatment || '',
+          sd_control: d.sd_control || '',
+          outcome: d.outcome || '',
+        }
+      }
+
+      return {
+        study: `${d.authors || ''} (${d.year || ''})`,
+        n_treatment: d.n_treatment || '',
+        n_control: d.n_control || '',
+        events_treatment: d.events_treatment || '',
+        events_control: d.events_control || '',
+        effect_size: d.effect_size || '',
+        ci: d.confidence_interval || '',
+        outcome: d.outcome || '',
+      }
+    })
+
+    if (isContinuous) {
+      return [
+        'study,mean_treatment,mean_control,sd_treatment,sd_control,outcome',
+        ...rows.map(r => `"${r.study}","${r.mean_treatment}","${r.mean_control}","${r.sd_treatment}","${r.sd_control}","${r.outcome}"`),
+      ].join('\n')
+    }
+
+    return [
+      'study,n_treatment,n_control,events_treatment,events_control,effect_size,ci,outcome',
+      ...rows.map(r => `"${r.study}","${r.n_treatment}","${r.n_control}","${r.events_treatment}","${r.events_control}","${r.effect_size}","${r.ci}","${r.outcome}"`),
+    ].join('\n')
+  }
+
+  const exportGradMetaBinary = () => {
     if (extractedData.length === 0) {
       notify('No data to export yet')
       return
     }
-    const gmData = extractedData.filter(d => !d._error).map(d => ({
-      study: `${d.authors || ''} (${d.year || ''})`,
-      n: d.sample_size || '',
-      effect_size: d.effect_size || '',
-      ci: d.confidence_interval || '',
-      outcome: d.outcome || '',
-    }))
-    const csv = ['study,n,effect_size,ci,outcome',
-      ...gmData.map(r => `"${r.study}","${r.n}","${r.effect_size}","${r.ci}","${r.outcome}"`)
-    ].join('\n')
-    downloadFile('extracta_gradmeta.csv', csv, 'text/csv')
-    notify('GradMeta CSV downloaded')
+    downloadFile('extracta_gradmeta_binary.csv', buildGradMetaCSV(false), 'text/csv')
+    notify('GradMeta binary CSV downloaded')
+  }
+
+  const exportGradMetaContinuous = () => {
+    if (extractedData.length === 0) {
+      notify('No data to export yet')
+      return
+    }
+    downloadFile('extracta_gradmeta_continuous.csv', buildGradMetaCSV(true), 'text/csv')
+    notify('GradMeta continuous CSV downloaded')
   }
 
   const downloadFile = (filename: string, content: string, type: string) => {
@@ -287,16 +324,14 @@ results.push(finalResult);
     }
     return row[fieldId] || ''
   }
-const selFields = FIELDS.filter(f => selectedFields.has(f.id))
+
+  const selFields = FIELDS.filter(f => selectedFields.has(f.id))
   const successCount = extractedData.filter(d => !d._error).length
   const fillRate = selFields.length > 0 && successCount > 0 ? Math.round(extractedData.reduce((acc, row) => acc + selFields.filter(f => row[f.id] && row[f.id] !== null).length, 0) / (successCount * selFields.length) * 100) : 0
 
   return (
     <>
-    
-    </>
-  
-    {/* AUTH BUTTON */}
+      {/* AUTH BUTTON */}
     <button
       onClick={() => user ? supabase.auth.signOut() : setShowAuth(true)}
       style={{
@@ -555,11 +590,12 @@ const selFields = FIELDS.filter(f => selectedFields.has(f.id))
             <div className="export-card-desc">OR / RR / RD · events-based outcomes</div>
           </div>
 
-         <div className="export-card" onClick={exportGradMetaContinuous}>
-           <div className="export-card-icon">📉</div>
-           <div className="export-card-name">GradMeta — Continuous</div>
-           <div className="export-card-desc">MD / SMD · means & SD outcomes</div>
+          <div className="export-card" onClick={exportGradMetaContinuous}>
+            <div className="export-card-icon">📉</div>
+            <div className="export-card-name">GradMeta — Continuous</div>
+            <div className="export-card-desc">MD / SMD · means & SD outcomes</div>
           </div>
+        </div>
 
         <div style={{ background: 'var(--paper)', border: '1px solid var(--border)', borderRadius: '3px', padding: '20px 24px', marginBottom: '24px' }}>
           <div style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--accent)', marginBottom: '8px', letterSpacing: '0.08em' }}>
