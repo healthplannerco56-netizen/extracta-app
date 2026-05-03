@@ -99,7 +99,12 @@ CRITICAL RULES:
 - authors: Return a comma-separated string of author surnames e.g. "Smith, Jones, Ali".
 - year: Return as an integer e.g. 2024.
 - For all other fields: extract the most relevant value as a concise string.
-
+- confidence_interval: Always extract alongside effect_size. 
+  If effect_size is "RR 0.99", confidence_interval should be 
+  "0.80-1.21". Return all CIs as a matching list if multiple 
+  e.g. "0.80-1.21; 0.46-1.39; 0.19-0.73".
+- p_value: Return the p-value for the PRIMARY outcome 
+  (first/main result reported), not secondary outcomes.
 Fields to extract:
 ${fields}
 
