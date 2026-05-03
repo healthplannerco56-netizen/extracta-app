@@ -72,45 +72,31 @@ export async function POST(req: NextRequest) {
     }
 
     const message = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+      model: 'claude-sonnet-4-20250514',
       max_tokens: 2000,
       system: 'You are a data extraction engine. You always output valid JSON only.',
       messages: [
         {
           role: 'user',
-     content: `You are extracting structured data from a research paper for meta-analysis.
+ content: `You are a precise data extraction engine for academic meta-analysis.
 
-Return ONLY a valid JSON object with these exact field keys. Use null for any field not found.
+Extract fields from the paper below. Return ONLY a valid JSON object. Use null only if the value is genuinely absent from the entire paper.
 
-CRITICAL RULES:
-- effect_size: Return the full value including the number e.g. "RR 0.99" or "OR 1.24" or "MD -0.31". Never return just the measure type alone.
-- confidence_interval: This is MANDATORY. It must never be null if effect_size is not null. 
-  Look for patterns like "(95% CI: 0.80-1.21)" or "[0.46, 1.39]" immediately after each RR/OR/MD value. 
-  Return all CIs as a semicolon-separated list matching the order of effect_size values 
-  e.g. "0.80-1.21; 0.46-1.39; 0.19-0.73". 
-  If you found RR values, you MUST find their confidence intervals in the same sentence or table row.
-- p_value: Return ONLY the p-value of the first/primary outcome listed in the abstract 
-  or results section. For this paper that would be the QFT conversion result. 
-  Return a single value only e.g. "0.90".
-- n_treatment: Return the number of participants in the intervention/treatment arm as an integer.
-- n_control: Return the number of participants in the control/placebo arm as an integer.
-- events_treatment: Return the number of events/outcomes that occurred in the treatment arm as an integer.
-- events_control: Return the number of events/outcomes that occurred in the control arm as an integer.
-- mean_treatment: Return the mean outcome value in the treatment arm as a number.
-- mean_control: Return the mean outcome value in the control arm as a number.
-- sd_treatment: Return the standard deviation in the treatment arm as a number.
-- sd_control: Return the standard deviation in the control arm as a number.
-- rob: Return exactly one of: "Low" / "Some concerns" / "High" / "Unclear".
-- grade: Return exactly one of: "High" / "Moderate" / "Low" / "Very Low".
-- authors: Return a comma-separated string of author surnames e.g. "Smith, Jones, Ali".
-- year: Return as an integer e.g. 2024.
-- For all other fields: extract the most relevant value as a concise string.
-- confidence_interval: Always extract alongside effect_size. 
-  If effect_size is "RR 0.99", confidence_interval should be 
-  "0.80-1.21". Return all CIs as a matching list if multiple 
-  e.g. "0.80-1.21; 0.46-1.39; 0.19-0.73".
-- p_value: Return the p-value for the PRIMARY outcome 
-  (first/main result reported), not secondary outcomes.
+EXTRACTION RULES:
+- authors: Comma-separated surnames e.g. "Smith, Jones, Ali"
+- year: Integer e.g. 2026
+- effect_size: Full value with number e.g. "RR 0.99" — never just "RR". If multiple outcomes, separate with " | " e.g. "RR 0.99 | RR 0.80 | RR 0.37"
+- confidence_interval: The 95% CI numbers for each effect size in same order e.g. "0.80-1.21 | 0.46-1.39 | 0.19-0.73". Look for parentheses like (95% CI: x-y) next to each RR/OR value. NEVER return null if effect_size is not null.
+- p_value: The p-value of the PRIMARY outcome only, as a single number e.g. "0.90"
+- n_treatment: Participant count in intervention arm as integer
+- n_control: Participant count in control arm as integer  
+- events_treatment: Event count in treatment arm as integer
+- events_control: Event count in control arm as integer
+- rob: Exactly one of: "Low" | "Some concerns" | "High" | "Unclear"
+- grade: Exactly one of: "High" | "Moderate" | "Low" | "Very Low"
+- subgroup: Any subgroup analyses mentioned e.g. "Age, region"
+- funding: Funding source if mentioned, else null
+
 Fields to extract:
 ${fields}
 
