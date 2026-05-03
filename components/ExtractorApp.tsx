@@ -298,7 +298,8 @@ results.push(finalResult);
       )
     : 0
   return (
-  <>
+    }
+    <>
     {/* AUTH BUTTON */}
     <button
       onClick={() => user ? supabase.auth.signOut() : setShowAuth(true)}
@@ -543,7 +544,7 @@ results.push(finalResult);
 
         <div className="export-options">
           <div className="export-card" onClick={exportCSV}>
-            <div className="export-card-icon">📊</div>
+            <div className="export-card-icon">&#123; &#125;</div>
             <div className="export-card-name">CSV</div>
             <div className="export-card-desc">Universal format, opens in Excel, Numbers, Google Sheets</div>
           </div>
