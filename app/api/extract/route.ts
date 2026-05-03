@@ -78,9 +78,29 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: 'user',
-          content: `Extract the following fields from this research paper. Return ONLY a valid JSON object. Use null for missing fields.
+     content: `You are extracting structured data from a research paper for meta-analysis.
 
-Fields:
+Return ONLY a valid JSON object with these exact field keys. Use null for any field not found.
+
+CRITICAL RULES:
+- effect_size: Return the full value including the number e.g. "RR 0.99" or "OR 1.24" or "MD -0.31". Never return just the measure type alone.
+- confidence_interval: Return the actual numbers only e.g. "0.80-1.21" or "-0.45 to 0.12". Never return just "95% CI".
+- p_value: Return the numeric value of the PRIMARY outcome p-value e.g. "0.04" or "<0.001". Never return null if a p-value exists anywhere in the paper.
+- n_treatment: Return the number of participants in the intervention/treatment arm as an integer.
+- n_control: Return the number of participants in the control/placebo arm as an integer.
+- events_treatment: Return the number of events/outcomes that occurred in the treatment arm as an integer.
+- events_control: Return the number of events/outcomes that occurred in the control arm as an integer.
+- mean_treatment: Return the mean outcome value in the treatment arm as a number.
+- mean_control: Return the mean outcome value in the control arm as a number.
+- sd_treatment: Return the standard deviation in the treatment arm as a number.
+- sd_control: Return the standard deviation in the control arm as a number.
+- rob: Return exactly one of: "Low" / "Some concerns" / "High" / "Unclear".
+- grade: Return exactly one of: "High" / "Moderate" / "Low" / "Very Low".
+- authors: Return a comma-separated string of author surnames e.g. "Smith, Jones, Ali".
+- year: Return as an integer e.g. 2024.
+- For all other fields: extract the most relevant value as a concise string.
+
+Fields to extract:
 ${fields}
 
 Paper text:
