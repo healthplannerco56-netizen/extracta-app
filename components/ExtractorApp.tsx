@@ -300,7 +300,6 @@ results.push(finalResult);
 
   return (
     <>
-    </>
     {/* AUTH BUTTON */}
     <button
       onClick={() => user ? supabase.auth.signOut() : setShowAuth(true)}
