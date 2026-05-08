@@ -179,7 +179,7 @@ export default function ExtractorApp() {
       try {
         setProgressLabel(`Extracting text from ${file.name}...`)
         const pdfText = await extractPDFText(file)
-        setProgressLabel(`Sending to Claude AI...`)
+        setProgressLabel(`Extracting...`)
         const apiResult = await callClaudeAPI(pdfText, selFields)
         results.push({ ...apiResult, _filename: file.name } as ExtractedRow)
       } catch (err: any) {
