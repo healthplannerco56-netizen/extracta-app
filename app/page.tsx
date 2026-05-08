@@ -19,6 +19,7 @@ export default function Home() {
         <div className="logo">Extract<span>a</span></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div className="nav-badge">BETA v0.1</div>
+          <a href="/pricing" className="text-sm underline">Upgrade</a>
           <AuthButton />
         </div>
         </nav>
