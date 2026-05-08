@@ -196,10 +196,14 @@ export default function ExtractorApp() {
  const downloadFile = (filename: string, content: string, type: string) => {
   const blob = new Blob([content], { type })
   const url = URL.createObjectURL(blob)
-  window.open(url, '_blank')
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
-
   const exportCSV = () => {
     if (extractedData.length === 0) { notify('No data to export yet'); return }
     const headers = ['File', ...FIELDS.filter(f => selectedFields.has(f.id)).map(f => f.name)]
