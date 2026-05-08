@@ -483,6 +483,9 @@ export default function ExtractorApp() {
 
       {/* PANEL 4: EXPORT */}
       <div className={`panel ${activeTab === 3 ? 'active' : ''}`}>
+        <div style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--accent)', marginBottom: '12px' }}>
+  Debug: {extractedData.length} rows extracted
+</div>
         <h2 style={{ fontFamily: 'var(--serif)', fontSize: '24px', marginBottom: '8px' }}>Export your data</h2>
         <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '4px' }}>
           Choose your format. All exports include a human-review audit trail.
