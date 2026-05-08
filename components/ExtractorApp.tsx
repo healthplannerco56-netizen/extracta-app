@@ -1,5 +1,5 @@
 'use client'
-
+import UpgradeModal from '@/components/UpgardeModal'
 import { useState, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
@@ -155,6 +155,11 @@ export default function ExtractorApp() {
 
   const startExtraction = async () => {
     if (!user) { setShowAuth(true); return }
+    const pdfLimit = profile?.plan === 'pro' ? 20 : 3
+if (files.length > pdfLimit) {
+  setShowUpgrade('pdf_limit')
+  return
+}
     if (files.length === 0) { notify('Please upload at least one PDF first'); goToTab(0); return }
     if (selectedFields.size === 0) { notify('Please select at least one field to extract'); return }
 
