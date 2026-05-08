@@ -21,6 +21,14 @@ export default function PricingPage() {
   return (
     <>
       <nav>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+    <button
+      onClick={() => router.back()}
+      className="btn btn-ghost"
+      style={{ padding: '6px 10px', fontSize: '16px', lineHeight: 1 }}
+    >
+      ✕
+    </button>
         <div className="logo">Extracta<span>.</span></div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span className="nav-badge">BETA v0.1</span>
