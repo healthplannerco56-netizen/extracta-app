@@ -193,15 +193,12 @@ export default function ExtractorApp() {
     setProgressLabel(`Complete — ${results.filter(d => !d._error).length} of ${files.length} extracted`)
   }
 
-  const downloadFile = (filename: string, content: string, type: string) => {
-    const blob = new Blob([content], { type })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = filename
-    a.click()
-    URL.revokeObjectURL(url)
-  }
+ const downloadFile = (filename: string, content: string, type: string) => {
+  const blob = new Blob([content], { type })
+  const url = URL.createObjectURL(blob)
+  window.open(url, '_blank')
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
 
   const exportCSV = () => {
     if (extractedData.length === 0) { notify('No data to export yet'); return }
