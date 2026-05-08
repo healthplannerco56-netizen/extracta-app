@@ -1,5 +1,5 @@
 'use client'
-import UpgradeModal from '@/components/UpgardeModal'
+import UpgradeModal from '@/components/UpgradeModal'
 import { useState, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
