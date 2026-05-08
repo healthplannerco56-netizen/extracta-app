@@ -19,63 +19,60 @@ export default function PricingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f0e8] relative overflow-hidden">
-      {/* Wavy background — same as homepage */}
-      <div className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E")`,
-        }}
-      />
+    <>
+      <nav>
+        <div className="logo">Extracta<span>.</span></div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span className="nav-badge">BETA v0.1</span>
+          <a href="/pricing" className="btn btn-ghost" style={{ fontSize: '12px' }}>Upgrade</a>
+        </div>
+      </nav>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-24">
-        {/* Header */}
-        <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">— Pricing</p>
-        <h1 className="text-5xl md:text-6xl font-bold font-serif mb-4 leading-tight">
-          Simple, honest<br />pricing.
-        </h1>
-        <p className="text-gray-600 text-lg mb-16 max-w-md">
-          Start free. Upgrade when you need to extract at scale.
-        </p>
+      <div className="hero">
+        <p className="hero-label">Pricing</p>
+        <h1>Simple, honest<br />pricing.</h1>
+        <p className="hero-sub">Start free. Upgrade when you need to extract at scale.</p>
+      </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="app-container">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', maxWidth: '720px' }}>
+
           {/* Free */}
-          <div className="bg-white/60 backdrop-blur border border-gray-200 rounded-2xl p-8 flex flex-col">
-            <p className="text-xs tracking-widest uppercase text-gray-400 mb-6">Free</p>
-            <div className="font-serif text-5xl font-bold mb-1">$0</div>
-            <p className="text-gray-400 text-sm mb-8">forever</p>
-            <ul className="flex flex-col gap-3 text-gray-700 flex-1 mb-8">
+          <div className="app-card" style={{ padding: '32px' }}>
+            <p className="section-label">Free</p>
+            <div style={{ fontFamily: 'var(--serif)', fontSize: '52px', lineHeight: 1, marginBottom: '4px' }}>$0</div>
+            <p style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--muted)', marginBottom: '28px' }}>forever</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
               {['3 PDFs per extraction', 'Basic fields', 'CSV export'].map(f => (
-                <li key={f} className="flex items-center gap-2">
-                  <span className="text-gray-400">✓</span> {f}
-                </li>
+                <div key={f} style={{ fontSize: '13px', color: 'var(--muted)', display: 'flex', gap: '8px' }}>
+                  <span style={{ color: 'var(--accent2)' }}>✓</span> {f}
+                </div>
               ))}
-            </ul>
-            <button disabled
-              className="w-full py-3 rounded-xl border border-gray-300 text-gray-400 font-serif text-base cursor-not-allowed">
+            </div>
+            <button disabled className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center', opacity: 0.5 }}>
               Current Plan
             </button>
           </div>
 
           {/* Pro */}
-          <div className="bg-gray-900 text-white rounded-2xl p-8 flex flex-col">
-            <p className="text-xs tracking-widest uppercase text-gray-400 mb-6">Pro</p>
-            <div className="font-serif text-5xl font-bold mb-1">$9</div>
-            <p className="text-gray-400 text-sm mb-8">per month</p>
-            <ul className="flex flex-col gap-3 text-gray-300 flex-1 mb-8">
+          <div className="app-card" style={{ padding: '32px', background: 'var(--ink)', borderColor: 'var(--ink)' }}>
+            <p className="section-label" style={{ color: 'var(--muted)' }}>Pro</p>
+            <div style={{ fontFamily: 'var(--serif)', fontSize: '52px', lineHeight: 1, color: 'var(--paper)', marginBottom: '4px' }}>$9</div>
+            <p style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--muted)', marginBottom: '28px' }}>per month</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
               {['20 PDFs per extraction', 'All fields', 'CSV + Excel export', 'Priority support'].map(f => (
-                <li key={f} className="flex items-center gap-2">
-                  <span className="text-gray-500">✓</span> {f}
-                </li>
+                <div key={f} style={{ fontSize: '13px', color: '#a09a92', display: 'flex', gap: '8px' }}>
+                  <span style={{ color: 'var(--accent)' }}>✓</span> {f}
+                </div>
               ))}
-            </ul>
-            <button onClick={handleUpgrade}
-              className="w-full py-3 rounded-xl bg-[#8B2500] hover:bg-[#7a2000] transition text-white font-serif text-base">
+            </div>
+            <button onClick={handleUpgrade} className="btn btn-accent" style={{ width: '100%', justifyContent: 'center' }}>
               Upgrade to Pro
             </button>
           </div>
+
         </div>
       </div>
-    </main>
+    </>
   )
 }
