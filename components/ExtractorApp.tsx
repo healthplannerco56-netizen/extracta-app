@@ -70,6 +70,7 @@ interface ExtractedRow {
 }
 
 export default function ExtractorApp() {
+  const [showUpgrade, setShowUpgrade] = useState<string | null>(null) 
   const [activeTab, setActiveTab] = useState(0)
   const [files, setFiles] = useState<File[]>([])
   const [selectedFields, setSelectedFields] = useState<Set<string>>(
