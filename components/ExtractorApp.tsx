@@ -82,7 +82,7 @@ export default function ExtractorApp() {
   const [notification, setNotification] = useState('')
   const [showNotification, setShowNotification] = useState(false)
   const [dragOver, setDragOver] = useState(false)
-  const { user } = useAuth()
+  const { user,profile } = useAuth()
   const [showAuth, setShowAuth] = useState(false)
   const [editableCells, setEditableCells] = useState({} as Record<string, Record<number, string>>)
 
@@ -156,8 +156,8 @@ export default function ExtractorApp() {
   const startExtraction = async () => {
     if (!user) { setShowAuth(true); return }
     const pdfLimit = profile?.plan === 'pro' ? 20 : 3
-if (files.length > pdfLimit) {
-  setShowUpgrade('pdf_limit')
+    if (files.length > pdfLimit) {
+    setShowUpgrade('pdf_limit')
   return
 }
     if (files.length === 0) { notify('Please upload at least one PDF first'); goToTab(0); return }
