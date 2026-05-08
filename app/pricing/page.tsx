@@ -3,34 +3,12 @@
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 
-const PLANS = [
-  {
-    name: 'Free',
-    price: '$0',
-    period: 'forever',
-    features: ['3 PDFs per extraction', 'Basic fields', 'CSV export'],
-    cta: 'Current Plan',
-    disabled: true,
-    variantId: null,
-  },
-  {
-    name: 'Pro',
-    price: '$9',
-    period: 'per month',
-    features: ['20 PDFs per extraction', 'All fields', 'CSV + Excel export', 'Priority support'],
-    cta: 'Upgrade to Pro',
-    disabled: false,
-    variantId: process.env.NEXT_PUBLIC_LEMONSQUEEZY_VARIANT_ID,
-  },
-]
-
 export default function PricingPage() {
   const { user } = useAuth()
   const router = useRouter()
 
   const handleUpgrade = async () => {
     if (!user) { router.push('/'); return }
-
     const res = await fetch('/api/lemonsqueezy/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -41,28 +19,62 @@ export default function PricingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-20">
-      <h1 className="text-4xl font-bold mb-2 text-center">Simple Pricing</h1>
-      <p className="text-gray-500 mb-12 text-center">Upgrade to extract more, faster.</p>
+    <main className="min-h-screen bg-[#f5f0e8] relative overflow-hidden">
+      {/* Wavy background — same as homepage */}
+      <div className="absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E")`,
+        }}
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl w-full">
-        {PLANS.map((plan) => (
-          <div key={plan.name} className="border rounded-2xl p-8 flex flex-col gap-4 shadow-sm">
-            <h2 className="text-2xl font-bold">{plan.name}</h2>
-            <div className="text-4xl font-black">{plan.price} <span className="text-base font-normal text-gray-400">/ {plan.period}</span></div>
-            <ul className="flex flex-col gap-2 text-gray-600 flex-1">
-              {plan.features.map(f => <li key={f}>✓ {f}</li>)}
+      <div className="relative z-10 max-w-4xl mx-auto px-6 py-24">
+        {/* Header */}
+        <p className="text-xs tracking-widest uppercase text-gray-500 mb-4">— Pricing</p>
+        <h1 className="text-5xl md:text-6xl font-bold font-serif mb-4 leading-tight">
+          Simple, honest<br />pricing.
+        </h1>
+        <p className="text-gray-600 text-lg mb-16 max-w-md">
+          Start free. Upgrade when you need to extract at scale.
+        </p>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Free */}
+          <div className="bg-white/60 backdrop-blur border border-gray-200 rounded-2xl p-8 flex flex-col">
+            <p className="text-xs tracking-widest uppercase text-gray-400 mb-6">Free</p>
+            <div className="font-serif text-5xl font-bold mb-1">$0</div>
+            <p className="text-gray-400 text-sm mb-8">forever</p>
+            <ul className="flex flex-col gap-3 text-gray-700 flex-1 mb-8">
+              {['3 PDFs per extraction', 'Basic fields', 'CSV export'].map(f => (
+                <li key={f} className="flex items-center gap-2">
+                  <span className="text-gray-400">✓</span> {f}
+                </li>
+              ))}
             </ul>
-            <button
-              onClick={plan.disabled ? undefined : handleUpgrade}
-              disabled={plan.disabled}
-              className={`mt-4 rounded-xl py-3 font-semibold text-white transition
-                ${plan.disabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-black hover:bg-gray-800'}`}
-            >
-              {plan.cta}
+            <button disabled
+              className="w-full py-3 rounded-xl border border-gray-300 text-gray-400 font-serif text-base cursor-not-allowed">
+              Current Plan
             </button>
           </div>
-        ))}
+
+          {/* Pro */}
+          <div className="bg-gray-900 text-white rounded-2xl p-8 flex flex-col">
+            <p className="text-xs tracking-widest uppercase text-gray-400 mb-6">Pro</p>
+            <div className="font-serif text-5xl font-bold mb-1">$9</div>
+            <p className="text-gray-400 text-sm mb-8">per month</p>
+            <ul className="flex flex-col gap-3 text-gray-300 flex-1 mb-8">
+              {['20 PDFs per extraction', 'All fields', 'CSV + Excel export', 'Priority support'].map(f => (
+                <li key={f} className="flex items-center gap-2">
+                  <span className="text-gray-500">✓</span> {f}
+                </li>
+              ))}
+            </ul>
+            <button onClick={handleUpgrade}
+              className="w-full py-3 rounded-xl bg-[#8B2500] hover:bg-[#7a2000] transition text-white font-serif text-base">
+              Upgrade to Pro
+            </button>
+          </div>
+        </div>
       </div>
     </main>
   )
