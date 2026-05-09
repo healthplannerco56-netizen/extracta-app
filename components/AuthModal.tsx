@@ -116,7 +116,7 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
         <button
           type="button"
           onClick={handleGoogle}
-        style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid #333', borderRadius: '4px', color: '#fff', fontSize: '12px', fontFamily: "'DM Mono', monospace", letterSpacing: '0.05em', cursor: 'pointer', marginBottom: '20px' }}
+        style={{ width: '100%', padding: '12px', background: '#1a1a1a', border: '1px solid #333', borderRadius: '4px', color: '#fff', fontSize: '12px', fontFamily: "'DM Mono', monospace", letterSpacing: '0.05em', cursor: 'pointer', marginBottom: '20px' }}
         >
           Continue with Google
         </button>
