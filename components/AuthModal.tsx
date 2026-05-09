@@ -107,7 +107,7 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
           <button
             type="submit"
             disabled={loading}
-            style={{ width: '100%', padding: '12px', background: '#c8a97e', border: 'none', borderRadius: '4px', color: '#000', fontSize: '14px', fontWeight: '600', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, marginBottom: '12px' }}
+            style={{ width: '100%', padding: '12px', background: '#c84b2f', border: 'none', borderRadius: '4px', color: '#fff', fontSize: '14px', fontWeight: '600', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, marginBottom: '12px' }}
           >
             {loading ? 'Please wait...' : mode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
