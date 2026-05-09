@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get('next') ?? '/'
 
   if (code) {
-    const supabase = createSupabaseServerClient()
+  return NextResponse.redirect(`${origin}/?error=auth_failed`)
     
     // Exchange the code for a session
     const { error } = await supabase.auth.exchangeCodeForSession(code)
@@ -23,5 +23,5 @@ export async function GET(request: NextRequest) {
 
   // If something went wrong, send them to an error page instead of 
   // looping them back to the home page in confusion.
-  return NextResponse.redirect(`${origin}/auth-error`)
+  return NextResponse.redirect(`${origin}/?error=auth_failed`)
 }
