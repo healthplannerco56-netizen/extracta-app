@@ -1,0 +1,4 @@
+Classify the following clinical study PDF section. 
+Return one of: abstract, methods, results, discussion, references, appendix, tables, other.
+
+TEXT: {{CHUNK}}

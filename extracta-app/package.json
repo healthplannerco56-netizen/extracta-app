@@ -1,0 +1,13 @@
+{
+  "name": "extracta",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && uvicorn main:app --reload",
+    "install:frontend": "cd frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "docker:up": "docker compose -f docker/docker-compose.yml up --build",
+    "docker:down": "docker compose -f docker/docker-compose.yml down"
+  }
+}

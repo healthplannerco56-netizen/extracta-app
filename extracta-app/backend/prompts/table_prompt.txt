@@ -1,0 +1,5 @@
+Extract structured data from the following clinical study table. 
+Return a JSON array where each row is an object keyed by column header.
+
+TABLE:
+{{TABLE}}
