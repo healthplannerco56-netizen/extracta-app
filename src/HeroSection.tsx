@@ -109,7 +109,7 @@ export default function HeroSection() {
           <div className="liquid-glass flex items-center gap-x-8 rounded-full px-6 py-2">
             <div className="flex items-center gap-x-2 text-white">
               <Globe size={18} />
-              <span className="font-serif text-lg italic">Asme</span>
+              <span className="font-serif text-lg italic">Datalens</span>
             </div>
 
             {navLinks.map((link) => (
