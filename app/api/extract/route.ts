@@ -4,13 +4,17 @@ import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createServerSupabase } from '@/lib/supabase-server'
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+const anthropic = process.env.ANTHROPIC_API_KEY
+  ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  : null
 
 const SYSTEM_PROMPT = `You are a research data extraction assistant. Given the text of a research paper, extract the requested fields as structured JSON. Return ONLY valid JSON with no additional text. If a field cannot be found, use null.`
 
 export async function POST(request: Request) {
   try {
     const supabase = await createServerSupabase()
+    if (!supabase) return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 })
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -20,6 +24,10 @@ export async function POST(request: Request) {
 
     if (!studyId || !text || !fields) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+
+    if (!anthropic) {
+      return NextResponse.json({ error: 'Anthropic not configured' }, { status: 500 })
     }
 
     const fieldsPrompt = fields
