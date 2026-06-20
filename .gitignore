@@ -1,13 +1,13 @@
 node_modules/
-dist/
-.vite/
+.next/
+out/
 *.tsbuildinfo
 .env*
 !.env.example
 npm-debug.log*
-*.log
+yarn-debug.log*
+yarn-error.log*
 .DS_Store
 .vscode/
 .idea/
 Thumbs.db
-.vercel

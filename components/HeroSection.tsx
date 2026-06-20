@@ -1,5 +1,10 @@
+'use client'
+
 import { useRef, useEffect, useState, useCallback } from 'react'
-import { Globe, Instagram, Twitter } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Globe, Instagram, Twitter, Database } from 'lucide-react'
+import { createClient } from '@/lib/supabase'
+import AuthModal from './AuthModal'
 
 const VIDEO_SRC =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4.mp4'
@@ -10,6 +15,9 @@ const ENDED_DELAY = 100
 export default function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [opacity, setOpacity] = useState(0)
+  const [authOpen, setAuthOpen] = useState(false)
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
+  const router = useRouter()
 
   const opacityRef = useRef(0)
   const targetRef = useRef(0)
@@ -87,11 +95,15 @@ export default function HeroSection() {
     }
   }, [fadeTo])
 
+  const openAuth = (mode: 'signin' | 'signup') => {
+    setAuthMode(mode)
+    setAuthOpen(true)
+  }
+
   const navLinks = ['Features', 'Pricing', 'About']
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-neutral-950">
-      {/* Background video */}
+    <div className="relative h-screen w-screen overflow-hidden bg-neutral-950">
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full translate-y-[17%] object-cover"
@@ -102,13 +114,11 @@ export default function HeroSection() {
         src={VIDEO_SRC}
       />
 
-      {/* Content overlay */}
       <div className="relative z-10 flex h-full flex-col">
-        {/* Nav */}
         <nav className="flex justify-center pt-6">
           <div className="liquid-glass flex items-center gap-x-8 rounded-full px-6 py-2">
             <div className="flex items-center gap-x-2 text-white">
-              <Globe size={18} />
+              <Database size={18} />
               <span className="font-serif text-lg italic">Datalens</span>
             </div>
 
@@ -123,51 +133,40 @@ export default function HeroSection() {
             ))}
 
             <div className="flex items-center gap-x-3 pl-2">
-              <a
-                href="#"
+              <button
+                onClick={() => openAuth('signin')}
                 className="text-sm text-white/60 transition-colors hover:text-white/90"
               >
-                Sign Up
-              </a>
-              <a
-                href="#"
+                Sign In
+              </button>
+              <button
+                onClick={() => openAuth('signup')}
                 className="rounded-full bg-white/10 px-4 py-1 text-sm text-white transition-colors hover:bg-white/20"
               >
-                Login
-              </a>
+                Get Started
+              </button>
             </div>
           </div>
         </nav>
 
-        {/* Hero content */}
         <main className="flex flex-1 flex-col items-center justify-center gap-y-8 px-4">
           <h1 className="max-w-3xl text-center font-serif text-6xl italic leading-tight text-white sm:text-7xl md:text-8xl">
             Built for the&nbsp;curious
           </h1>
 
-          {/* Email input */}
-          <div className="liquid-glass flex w-full max-w-md items-center gap-x-2 rounded-full px-2 py-1">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 bg-transparent px-4 py-2 text-sm text-white placeholder-white/30 outline-none"
-            />
-            <button className="rounded-full bg-white/10 px-5 py-2 text-sm text-white transition-colors hover:bg-white/20">
-              Submit
-            </button>
-          </div>
-
           <p className="max-w-md text-center text-sm text-white/40">
-            A space for thinkers, tinkerers, and those who refuse to stop asking
-            why.
+            Extract structured data from research PDFs using AI. Turn papers into
+            datasets.
           </p>
 
-          <button className="liquid-glass rounded-full px-8 py-3 text-sm text-white/80 transition-colors hover:text-white">
-            View the manifesto
+          <button
+            onClick={() => openAuth('signup')}
+            className="liquid-glass rounded-full px-8 py-3 text-sm text-white/80 transition-colors hover:text-white"
+          >
+            Start extracting — free
           </button>
         </main>
 
-        {/* Social footer */}
         <footer className="flex justify-center gap-x-4 pb-6">
           <a
             href="#"
@@ -189,6 +188,15 @@ export default function HeroSection() {
           </a>
         </footer>
       </div>
+
+      <AuthModal
+        isOpen={authOpen}
+        mode={authMode}
+        onClose={() => setAuthOpen(false)}
+        onSwitchMode={() =>
+          setAuthMode((m) => (m === 'signin' ? 'signup' : 'signin'))
+        }
+      />
     </div>
   )
 }
