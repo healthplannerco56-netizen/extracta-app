@@ -16,7 +16,7 @@ export default function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
   useEffect(() => {
     if (isOpen) {
       setLoading(true)
-      fetch('/api/lemonsqueezy/checkout', { method: 'POST' })
+      fetch('/api/dodo/checkout', { method: 'POST' })
         .then((r) => r.json())
         .then((d) => setCheckoutUrl(d.url ?? ''))
         .catch(() => {})
@@ -69,7 +69,7 @@ export default function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
           </a>
         ) : (
           <p className="text-center text-xs text-white/30">
-            LemonSqueezy not configured
+            Dodo Payments not configured
           </p>
         )}
       </div>

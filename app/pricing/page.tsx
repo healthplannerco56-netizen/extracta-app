@@ -50,7 +50,7 @@ export default function PricingPage() {
         return
       }
 
-      const res = await fetch('/api/lemonsqueezy/checkout', { method: 'POST' })
+      const res = await fetch('/api/dodo/checkout', { method: 'POST' })
       const data = await res.json()
       if (data.url) window.location.href = data.url
     } else {

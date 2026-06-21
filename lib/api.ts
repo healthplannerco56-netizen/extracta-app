@@ -65,7 +65,7 @@ export async function exportStudy(studyId: string, format: 'csv' | 'json') {
 }
 
 export async function createCheckout() {
-  return request<{ url: string }>('/api/lemonsqueezy/checkout', {
+  return request<{ url: string }>('/api/dodo/checkout', {
     method: 'POST',
   })
 }
