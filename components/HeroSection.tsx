@@ -122,15 +122,18 @@ export default function HeroSection() {
               <span className="font-serif text-lg italic">Datalens</span>
             </div>
 
-            {navLinks.map((link) => (
-              <a
-                key={link}
-                href="#"
-                className="text-sm text-white/60 transition-colors hover:text-white/90"
-              >
-                {link}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const href = link === 'Pricing' ? '/pricing' : '#'
+              return (
+                <a
+                  key={link}
+                  href={href}
+                  className="text-sm text-white/60 transition-colors hover:text-white/90"
+                >
+                  {link}
+                </a>
+              )
+            })}
 
             <div className="flex items-center gap-x-3 pl-2">
               <button
